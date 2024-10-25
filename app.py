@@ -1,6 +1,9 @@
 import streamlit as st
 from db.db_connector import get_db_connection
 import pandas as pd
+import calendar
+from data_import import data_read_write
+from filter import filter_data_by_sidebar, get_max_filter_amount, filter_customer_by_amount, top_customer_by_revenue,get_total_over_time,get_total_summery
 
 
 # Title of the app
@@ -9,9 +12,46 @@ st.title("Customer Order Data Engineering")
 # Get the database connection engine
 engine = get_db_connection()
 
-#read data from the csv file
-customer_data = pd.read_csv("data/customers.csv")
-order_data = pd.read_csv("data/order.csv")
+st.write('lets import the dataset by clicking the import data button.')
+st.button('Import Data', on_click=data_read_write)
 
-st.write(customer_data.head(5))
-st.write(order_data.head(5))
+sidebar_max_amount, sidebar_max_order = get_max_filter_amount()
+# Sidebar Filters
+st.sidebar.header('Sidebar Filters')
+date_range = st.sidebar.date_input('Order Date Range',[])
+min_amount = st.sidebar.slider('Filter By Total Spent', min_value=0, max_value=sidebar_max_amount)
+min_orders = st.sidebar.slider('Min Number Of Orders Placed By A Customer',min_value=0, max_value=sidebar_max_order)
+
+filter_orders = filter_data_by_sidebar(date_range, min_amount, min_orders)
+filter_customers = filter_customer_by_amount(min_amount, min_orders)
+
+tab1, tab2 = st.tabs(['Orders Data With Customers','Customers Data'])
+with tab1:
+    st.write("## Orders Data")
+    st.dataframe(filter_orders)
+with tab2:
+    st.write("## Customers Data")
+    st.dataframe(filter_customers)
+    
+
+st.subheader('Top 10 Customers by Revenue') 
+filter_top_customer = top_customer_by_revenue(10)
+st.bar_chart(filter_top_customer,y="spent_amount", x="customer_name",x_label='Customer',y_label='Total Spent')
+
+grouped_date = get_total_over_time()
+grouped_date.drop(['order_count'], axis=1, inplace=True)
+grouped_date['order_month'] = grouped_date['order_month'].apply(lambda x: calendar.month_abbr[x])
+grouped_date['month_with_year'] = grouped_date['order_year'].astype(str) +" - "+ grouped_date['order_month']
+st.subheader('Total Revenue Over Time')
+st.line_chart(grouped_date,y='spent_amount', x='month_with_year', color='#ffaa00', x_label='Month',y_label='total revenue')
+
+
+st.subheader('Summary Metrics')
+total_revenue,total_customers,total_orders=get_total_summery()
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.metric(label=f"Total Revenue", value=f"{total_revenue}", delta="")
+with col2:
+    st.metric(label=f"Number of unique customers", value=f"{total_customers}", delta="")
+with col3:
+    st.metric(label=f"Number of orders", value=f"{total_orders}", delta="")
