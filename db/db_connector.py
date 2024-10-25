@@ -3,16 +3,14 @@ to make database connection with SQLAlchemy
 """
 import os
 from sqlalchemy import create_engine
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
+import streamlit as st
 
 # Get database credentials from environment variables
-DB_HOST = os.getenv('DB_HOST')
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_NAME = os.getenv('DB_NAME')
+DB_HOST = st.secrets["delivergate_db"]["DB_HOST"]
+DB_USER = st.secrets["delivergate_db"]["DB_USER"]
+DB_PASSWORD = st.secrets["delivergate_db"]["DB_PASSWORD"]
+DB_NAME = st.secrets["delivergate_db"]["DB_NAME"]
+dialect = st.secrets["delivergate_db"]["dialect"]
 
 # Function to connect to the MySQL database 
 def get_db_connection():
@@ -25,7 +23,7 @@ def get_db_connection():
     """
     try:
         # Create the connection string for SQLAlchemy
-        connection_string = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+        connection_string = f"{dialect}+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
         engine = create_engine(connection_string)
         return engine
     except Exception as e:

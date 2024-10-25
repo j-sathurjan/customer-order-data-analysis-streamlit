@@ -7,7 +7,9 @@ from filter import filter_data_by_sidebar, get_max_filter_amount, filter_custome
 
 
 # Title of the app
-st.title("Customer Order Data Engineering")
+st.set_page_config(
+    page_title="Customer Order Data Engineering",
+    page_icon="🧊",)
 
 # Get the database connection engine
 engine = get_db_connection()
