@@ -4,6 +4,7 @@ import pandas as pd
 import calendar
 from data_import import data_read_write
 from filter import filter_data_by_sidebar, get_max_filter_amount, filter_customer_by_amount, top_customer_by_revenue,get_total_over_time,get_total_summery
+from ml_model import predict_results_from_model
 
 
 # Title of the app
@@ -14,6 +15,7 @@ st.set_page_config(
 # Get the database connection engine
 engine = get_db_connection()
 
+st.header("Import Data")
 st.write('lets import the dataset by clicking the import data button.')
 st.button('Import Data', on_click=data_read_write)
 
@@ -57,3 +59,17 @@ with col2:
     st.metric(label=f"Number of unique customers", value=f"{total_customers}", delta="")
 with col3:
     st.metric(label=f"Number of orders", value=f"{total_orders}", delta="")
+
+
+total_revenue = st.number_input(
+    "Insert a Revenue", placeholder="Type the total spent of the customer..."
+)
+total_orders = st.number_input(
+    "Insert total orders", placeholder="Type the number of orders placed..."
+)
+
+if st.button("predict"):
+    data = pd.DataFrame(index=['0'])
+    data['total_revenue'] = total_revenue
+    data['total_orders'] = total_orders
+    predict_results_from_model(data)
