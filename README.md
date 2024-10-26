@@ -73,7 +73,7 @@ streamlit_app/
    ```
 
 3. **Configure Database Connection**:
-   - Set up a MySQL database named delivergate_db:
+   - Create a MySQL database named delivergate_db:
      ```sql
      CREATE DATABASE delivergate_db;
      ```
@@ -100,6 +100,14 @@ streamlit_app/
 
 2. **Access the App**:
    - Go to `http://localhost:8501` to view the app.
+
+3. **Import Data**:
+   - if you are opening the app first time your database doesn't contain the table and relevent data. So, many error and warning messages will be shown as below in the app
+   ![image](https://github.com/user-attachments/assets/8db082bb-60a0-465a-a9e2-30249061402a)
+     
+   - if you see the page as above, plese navigate to **Original Data** page and then click on the **Import Data** button to import the data into sql. refer the below image
+   ![image](https://github.com/user-attachments/assets/2f0849f4-72c5-497c-968c-6698d02d07c8)
+
 
 ---
 
