@@ -7,7 +7,7 @@
 """
 import streamlit as st
 from db.db_connector import get_db_connection
-from filter import filter_customer_by_amount
+from db.filter import filter_customer_by_amount
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
