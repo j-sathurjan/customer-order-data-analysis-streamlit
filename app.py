@@ -12,7 +12,7 @@ engine = get_db_connection()
 st.set_page_config(
     # Title of the app
     page_title="Customer Order Data Engineering",
-    page_icon="🧊",)
+    page_icon="🦜",)
 
 def data():
     data_upload_page_display()
