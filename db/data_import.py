@@ -19,5 +19,5 @@ def data_read_write():
             order_data.to_sql(name='orders', con=engine, if_exists='replace', index=order_data.order_id)
             return st.success("Data imported successfully.")
         return st.error('Database connection error!.')
-    except Exception as e:
-            return st.error(f"Something went wrong on data import! {e}")
+    except Exception:
+            return st.error(f"Something went wrong on data import!")
