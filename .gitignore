@@ -1,1 +1,5 @@
 .streamlit/secrets.toml
+
+__pycache__
+db/__pycache__
+pages/__pycache__

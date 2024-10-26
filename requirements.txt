@@ -3,5 +3,4 @@ python-dotenv
 mysql-connector-python
 sqlalchemy
 pandas
-matplotlib
 scikit-learn

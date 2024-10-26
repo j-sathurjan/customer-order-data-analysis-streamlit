@@ -1,5 +1,5 @@
 import streamlit as st
-from data_import import data_read_write
+from db.data_import import data_read_write
 import pandas as pd
 
 def data_upload_page_display():

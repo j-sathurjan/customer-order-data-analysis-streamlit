@@ -1,7 +1,7 @@
 import streamlit as st
 from db.db_connector import get_db_connection
 import pandas as pd
-from filter import filter_data_by_sidebar, get_max_filter_amount, filter_customer_by_amount,top_customer_by_revenue,get_total_over_time,get_total_summery
+from db.filter import filter_data_by_sidebar, get_max_filter_amount, filter_customer_by_amount,top_customer_by_revenue,get_total_over_time,get_total_summery
 import calendar
 
 def data_filtering():
