@@ -21,10 +21,10 @@ def ml_prediction_display():
             data['total_orders'] = total_orders
             y = ml_app.predict_data_from_model(data)
             if y == 0:
-                return st.info("Customer is not a repeat purchaser")
+                st.info("Customer is not a repeat purchaser")
             else:
-                return st.success("Great! This customer is repeat purchaser")
-        return st.write("see the predicted output below",y)
+                st.success("Great! This customer is repeat purchaser")
+            st.write("see the predicted output below",y)
     except Exception:
         return st.error("something went wrong on prediction")
         
