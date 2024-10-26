@@ -26,6 +26,5 @@ def get_db_connection():
         connection_string = f"{dialect}+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
         engine = create_engine(connection_string)
         return engine
-    except Exception as e:
-        print(f"Error connecting to the database: {e}")
+    except Exception:
         return None
