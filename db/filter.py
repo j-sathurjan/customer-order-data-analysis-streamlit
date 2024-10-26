@@ -7,16 +7,19 @@ from datetime import date
 engine = get_db_connection()
 
 def get_max_filter_amount():
-    if engine:
-        query = """
-            select max(spent_amount) max_amount, max(order_count) max_count
-            from (select sum(total_amount) spent_amount, count(order_id) order_count
-            from orders
-            group by customer_id) sum_table;
-        """
-        max_df = pd.read_sql(query, con=engine)
-        return int(max_df['max_amount']), int(max_df['max_count'])
-    return st.error("Database connection error!")
+    try:
+        if engine:
+            query = """
+                select max(spent_amount) max_amount, max(order_count) max_count
+                from (select sum(total_amount) spent_amount, count(order_id) order_count
+                from orders
+                group by customer_id) sum_table;
+            """
+            max_df = pd.read_sql(query, con=engine)
+            return int(max_df['max_amount']), int(max_df['max_count'])
+        return st.error("Database connection error!")
+    except Exception as e:
+        return st.error("something went wrong!")
 
 def filter_data_by_sidebar(date_range, min_amount, min_orders):
     if engine:
