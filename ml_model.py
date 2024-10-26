@@ -30,9 +30,6 @@ class StreamlitLogisticRegressionApp():
                 #get the customer data with their total orders and total spent
                 data_frame = filter_customer_by_amount(0,0)
                 
-                if not data_frame:
-                    return st.error("please check whether the data is present inside the database.")
-                
                 st.subheader("Data Preprocessing")
                 st.write("This section involves in data processing before dive deeper into the machine learning field.")
                 
