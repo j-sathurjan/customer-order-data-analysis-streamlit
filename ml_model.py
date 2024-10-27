@@ -4,6 +4,8 @@
     StreamlitLogisticRegressionApp is build with the streamlit app components in between to display every step
     involved in the process of function execution at the same time SimpleLogisticRegressionApp contains only
     the python code which are relevent to machine learning and do specific task only with the return values.
+    - StreamlitLogisticRegressionApp:
+        - 
 """
 import streamlit as st
 from db.db_connector import get_db_connection
