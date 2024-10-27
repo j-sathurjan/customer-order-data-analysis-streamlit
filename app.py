@@ -27,14 +27,14 @@ from pages.dashboard import data_filtering, dashboard_data_visualization,dashboa
 from pages.data import data_upload_page_display
 from pages.ml import ml_data_processing_display
 
-# Establish a database connection using SQLAlchemy engine
-engine = get_db_connection()
-
 # Basic configuration for the Streamlit app
 st.set_page_config(
     # Title of the app
     page_title="Customer Order Data Engineering", # Sets the title displayed in the browser tab
     page_icon="🦜",) # Sets the icon for the app
+
+# Establish a database connection using SQLAlchemy engine
+engine = get_db_connection()
 
 def data():
     """
