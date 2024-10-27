@@ -1,12 +1,20 @@
 """
-    This module has two classes one is StreamlitLogisticRegressionApp, SimpleLogisticRegressionApp.
-    both are usefull for logistic regression machine learning model creation, data processing and prediction
-    StreamlitLogisticRegressionApp is build with the streamlit app components in between to display every step
-    involved in the process of function execution at the same time SimpleLogisticRegressionApp contains only
-    the python code which are relevent to machine learning and do specific task only with the return values.
-    - StreamlitLogisticRegressionApp:
-        - 
+Machine Learning Model Module for Streamlit Application
+
+This module includes two classes for building, validating, and predicting using 
+a logistic regression model:
+1. StreamlitLogisticRegressionApp: Integrates Streamlit UI components for displaying 
+   intermediate steps and data at each stage.
+2. SimpleLogisticRegressionApp: Contains only the core machine learning code, 
+   returning values directly without displaying in Streamlit.
+
+Classes:
+- StreamlitLogisticRegressionApp: Manages logistic regression with UI components for 
+  interactive data processing and prediction.
+- SimpleLogisticRegressionApp: Provides a streamlined logistic regression model for 
+  background processing without Streamlit UI.
 """
+#import necessory libraries
 import streamlit as st
 from db.db_connector import get_db_connection
 from db.filter import filter_customer_by_amount
@@ -19,26 +27,39 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import time
 
+# Initialize the database connection
 engine = get_db_connection()
 
 class StreamlitLogisticRegressionApp():
-    #Logistic Regression
-    model = LogisticRegression()
-    standardizer = StandardScaler()
+    """
+    Streamlit-enabled Logistic Regression Model for interactive UI.
+
+    This class handles data processing, validation, and prediction steps, 
+    integrating Streamlit components to display intermediate results.
+    """
+    model = LogisticRegression() # Initialize Logistic Regression model
+    standardizer = StandardScaler() # Initialize standard scaler for data normalization
     
     def data_preprocessing_for_model_build(self):
+        """
+        Preprocess Customer Data for Model Training.
+
+        This function retrieves customer data from the database, preprocesses it, 
+        and prepares input features (`X`) and target (`y`) for model training.
+        
+        Returns:
+            tuple: Processed features (X) and target (y) data.
+        """
         try:
             if engine:
-                #get the customer data with their total orders and total spent
+                # Retrieve customer data and display initial dataset
                 data_frame = filter_customer_by_amount(0,0)
-                
                 st.subheader("Data Preprocessing")
                 st.write("This section involves in data processing before dive deeper into the machine learning field.")
-                
                 st.write("The original data filtered from the mysql to fit into our need is displayed below")
                 st.dataframe(data_frame)
                 
-                #rename the columns and add the repeat puchaser column
+                # Add target column and rename columns
                 st.write("lets add a new column repeat_purchaser which is used as target feature to train our model.")
                 data_frame.rename(columns={"total_spent":"total_revenue","number_of_orders":"total_orders"}, inplace=True)
                 data_frame['repeat_purchaser'] =  data_frame['total_orders']>1
@@ -81,6 +102,17 @@ class StreamlitLogisticRegressionApp():
             return st.error(f"something went wrong on data processing!")
 
     def validate_the_lr_model(self,X,y,k=5):
+        """
+        Validate Logistic Regression Model using k-Fold Cross-Validation.
+
+        Parameters:
+            X (DataFrame): Input features for model training.
+            y (Series): Target variable for model training.
+            k (int): Number of folds for cross-validation (default is 5).
+
+        Returns:
+            LogisticRegression: Trained logistic regression model.
+        """
         try:
             st.subheader("Data Validation")
             st.write("""In this section i am going to validate my logistic regression model 
@@ -151,12 +183,21 @@ class StreamlitLogisticRegressionApp():
             return st.error("some thing went wrong on validation!")
         
     def predict_data_from_model(self,data):
+        """
+        Predict Customer Repeat Purchase Behavior.
+
+        Parameters:
+            data (DataFrame): Input data with `total_revenue` and `total_orders`.
+
+        Returns:
+            ndarray: Prediction result (1 for repeat purchaser, 0 for non-repeat).
+        """
         try:
             predict_data = self.standardizer.fit_transform(data)
             y_predict = self.model.predict(predict_data)
             return y_predict
         except Exception:
-            return st.error("something went wrong on prediction!")
+            return st.error("An error occurred during prediction.")
         
     # def build_lr_model(self, X,y,k=5):
     #     # Logistic Regression
@@ -164,11 +205,26 @@ class StreamlitLogisticRegressionApp():
     #     return model
 
 class SimpleLogisticRegressionApp():
+    """
+    Basic Logistic Regression Model for background processing.
+
+    This class provides core functionality for logistic regression, without 
+    Streamlit components, making it suitable for backend processing.
+    """
     #Logistic Regression
     model = LogisticRegression()
     standardizer = StandardScaler()
     
     def data_preprocessing_for_model_build(self):
+        """
+        Preprocess Data for Logistic Regression Model.
+
+        Retrieves customer data, adds target column, and prepares features (`X`) 
+        and target (`y`).
+        
+        Returns:
+            tuple: Processed features (X) and target (y) data.
+        """
         try:
             if engine:
                 #get the customer data with their total orders and total spent
@@ -188,6 +244,17 @@ class SimpleLogisticRegressionApp():
             return st.error("something went wrong!")
 
     def validate_the_lr_model(self,X,y,k=5):
+        """
+        Validate Logistic Regression Model with k-Fold Cross-Validation.
+
+        Parameters:
+            X (DataFrame): Input features for model training.
+            y (Series): Target variable for model training.
+            k (int): Number of folds for cross-validation.
+
+        Returns:
+            tuple: Trained model, average metrics, and fold-wise metrics.
+        """
         try:
             n_folds = k
             skf = StratifiedKFold(n_splits=n_folds)
@@ -241,6 +308,15 @@ class SimpleLogisticRegressionApp():
             return st.error("something went wrong!")
         
     def predict_data_from_model(self,data):
+        """
+        Predict Customer Repeat Purchase Behavior.
+
+        Parameters:
+            data (DataFrame): Input data with `total_revenue` and `total_orders`.
+
+        Returns:
+            ndarray: Prediction result (1 for repeat purchaser, 0 for non-repeat).
+        """
         try:
             predict_data = self.standardizer.fit_transform(data)
             y_predict = self.model.predict(predict_data)
